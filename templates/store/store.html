@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16">
+  <h2 class="text-3xl font-bold text-teal-100 mb-8">Featured Products</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    {% for product in products %}
+    <div class="bg-[#1e3a3a] rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+      <a href={{ product.get_url }}>
+        <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-48 object-cover border-none">
+      </a>
+
+      <div class="p-4">
+        <h3 class="text-lg font-semibold text-teal-200">{{ product.product_name }}</h3>
+        <p class="text-teal-400 text-sm mt-1 mb-2 truncate">{{ product.description }}</p>
+
+        {% if product.stock <= 0 %}
+        <p class="text-red-400 text-sm font-semibold mb-2">Out of Stock</p>
+        {% else %}
+        <p class="text-green-400 text-sm font-semibold mb-2">Available</p>
+        {% endif %}
+
+        <div class="flex items-center justify-between">
+          <span class="text-teal-300 font-bold text-md">₹{{ product.price }}</span>
+          <a href="#" class="bg-teal-400 text-black px-3 py-1 rounded-full text-sm font-medium hover:bg-teal-300 transition">Buy</a>
+        </div>
+      </div>
+    </div>
+    {% empty %} 
+    <p class="text-teal-400">No products available right now.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

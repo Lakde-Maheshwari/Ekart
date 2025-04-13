@@ -1,0 +1,85 @@
+{% extends "base.html" %} {% load static %} {% load tailwind_tags %} 
+{% block content %}
+<section
+  class="bg-[#0f2f2f] min-h-screen flex items-center justify-center px-6 py-16 m-10"
+>
+  <div
+    class="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+  >
+  
+    <div class="text-center md:text-left space-y-6">
+      <h1 class="text-4xl sm:text-5xl font-bold text-white leading-tight">
+        <span class="text-teal-300">Hey Lakde Maheshwari</span>
+        <span class="block text-xl sm:text-2xl text-teal-200 mt-3"
+          >Your Personal Shopping Experience</span
+        >
+      </h1>
+
+      <p class="text-lg text-teal-100 max-w-md">
+        Discover handpicked products curated just for you. Enjoy exclusive
+        deals, premium quality, and a shopping journey made for your taste.
+      </p>
+
+      <div
+        class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+      >
+        <a
+          href="{% url 'store' %}"
+          class="bg-teal-400 hover:bg-teal-300 text-black px-8 py-3 rounded-full text-lg font-semibold transition-colors shadow-md"
+        >
+          Visit Store
+        </a>
+        <a
+          href="#"
+          class="border-2 border-teal-400 text-teal-300 hover:bg-teal-400/10 px-8 py-3 rounded-full text-lg font-medium transition-colors"
+        >
+          Learn More
+        </a>
+      </div>
+
+      <div
+        class="pt-4 flex flex-wrap justify-center md:justify-start gap-6 text-teal-100"
+      >
+        <div class="flex items-center gap-2">
+          <svg
+            class="w-5 h-5 text-emerald-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>Premium Quality</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg
+            class="w-5 h-5 text-emerald-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>Exclusive Deals</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-center md:justify-end">
+      <div class="relative w-full max-w-md">
+        <img
+          src="https://images.pexels.com/photos/6214386/pexels-photo-6214386.jpeg?auto=compress&cs=tinysrgb&w=600"
+          alt="E-commerce Hero Image"
+          class="w-full rounded-xl shadow-lg object-cover border-2 border-teal-400/20"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content%}

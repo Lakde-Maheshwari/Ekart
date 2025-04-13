@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10 bg-[#1e3a3a] rounded-2xl shadow-2xl overflow-hidden hover:shadow-teal-600/50 transition duration-300">
+
+  <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}"
+       class="w-full h-64 object-cover sm:h-72 md:h-80 lg:h-96">
+
+  <div class="p-6">
+    <h2 class="text-2xl font-bold text-teal-200 mb-2">{{ single_product.product_name }}</h2>
+    
+    <p class="text-sm text-teal-300 mb-4 leading-relaxed">
+      {{ single_product.description }}
+    </p>
+
+    {% if single_product.stock <= 0 %}
+      <p class="text-green-400 text-sm font-semibold mb-2">Out of Stock</p>
+    {% else %}
+      <p class="text-red-400 text-sm font-semibold mb-2">Available</p>
+    {% endif %}
+
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-xl text-teal-300 font-extrabold">₹{{ single_product.price }}</span>
+    </div>
+
+    <div class="flex gap-4">
+      <a href="#" class="bg-teal-400 text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-300 transition w-full text-center">
+        Buy Now
+      </a>
+      
+      {% comment %} <form method="POST" action="{% url 'add_to_cart' single_product.id %}" class="w-full"> {% endcomment %}
+        {% csrf_token %}
+        <button type="submit" class="bg-white text-teal-800 border border-teal-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-100 transition w-full">
+          Add to Cart
+        </button>
+      {% comment %} </form> {% endcomment %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
