@@ -1,41 +1,85 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block content %}
-<div class="max-w-md mx-auto mt-10 bg-[#1e3a3a] rounded-2xl shadow-2xl overflow-hidden hover:shadow-teal-600/50 transition duration-300">
-
+<div
+  class="max-w-md mx-auto mt-10 bg-[#1e3a3a] rounded-2xl shadow-2xl overflow-hidden hover:shadow-teal-600/50 transition duration-300">
   <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}"
-       class="w-full h-64 object-cover sm:h-72 md:h-80 lg:h-96">
+    class="w-full h-64 object-cover sm:h-72 md:h-80 lg:h-96" />
 
-  <div class="p-6">
-    <h2 class="text-2xl font-bold text-teal-200 mb-2">{{ single_product.product_name }}</h2>
-    
-    <p class="text-sm text-teal-300 mb-4 leading-relaxed">
-      {{ single_product.description }}
-    </p>
+  <form action="{% url 'add_cart' single_product.id %}" method="POST">
+    {% csrf_token %}
+    <div class="p-6">
+      <h2 class="text-2xl font-bold text-teal-200 mb-2">
+        {{ single_product.product_name }}
+      </h2>
 
-    {% if single_product.stock <= 0 %}
-      <p class="text-green-400 text-sm font-semibold mb-2">Out of Stock</p>
-    {% else %}
-      <p class="text-red-400 text-sm font-semibold mb-2">Available</p>
-    {% endif %}
+      <p class="text-sm text-teal-300 mb-4 leading-relaxed">
+        {{ single_product.description }}
+      </p>
 
-    <div class="flex items-center justify-between mb-4">
-      <span class="text-xl text-teal-300 font-extrabold">₹{{ single_product.price }}</span>
+      <div class="flex items-center justify-between">
+        <span class="text-xl text-teal-300 font-extrabold">
+          ₹{{ single_product.price }}
+        </span>
+      </div>
+
+      <!-- Dropdown for the color -->
+      <div class="mb-3">
+        <label for="color" class="block text-sm font-medium text-teal-200 mb-1">
+          Choose Color
+        </label>
+        <select id="color" name="color"
+          class="w-full bg-[#2d4d4d] text-teal-100 border border-teal-600 rounded-lg px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+          required>
+          <option value="" disabled selected>Select color</option>
+          {% for i in single_product.variation_set.all %}
+          {% if i.variation_category == "color" %}
+          <option value="{{ i.variation_value }}">{{ i.variation_value }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Dropdown for the size -->
+      <div class="mb-4">
+        <label for="size" class="block text-sm font-medium text-teal-200 mb-1">
+          Choose Size
+        </label>
+        <select name="size" id="size"
+          class="w-full bg-[#2d4d4d] text-teal-100 border border-teal-600 rounded-lg px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+          required>
+          <option value="" disabled selected>Select size</option>
+          {% for i in single_product.variation_set.all %}
+          {% if i.variation_category == "size" %}
+          <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+
+      {% if single_product.stock <= 0 %} <p class="text-green-400 text-sm font-semibold mb-4">Out of Stock</p>
+        {% else %}
+        {% if in_cart %}
+        <div class="flex gap-3 mb-4">
+          <a href="{% url 'add_cart' single_product.id %}"
+            class="bg-green-500 text-white font-semibold py-2 px-4 rounded-xl shadow-inner cursor-not-allowed opacity-80 w-full">
+            Add to Cart
+          </a>
+          <a href="{% url 'cart' %}"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition duration-200 w-full text-center">
+            View Cart
+          </a>
+        </div>
+        {% else %}
+        <div class="flex gap-3 mb-4">
+          <button type="submit"
+            class="bg-teal-400 hover:bg-teal-300 text-black font-semibold py-2 px-4 rounded-xl shadow-md transition w-full text-center">
+            🛒 Add to Cart
+          </button>
+        </div>
+        {% endif %}
+        {% endif %}
     </div>
-
-    <div class="flex gap-4">
-      <a href="#" class="bg-teal-400 text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-300 transition w-full text-center">
-        Buy Now
-      </a>
-      
-      {% comment %} <form method="POST" action="{% url 'add_to_cart' single_product.id %}" class="w-full"> {% endcomment %}
-        {% csrf_token %}
-        <button type="submit" class="bg-white text-teal-800 border border-teal-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-100 transition w-full">
-          Add to Cart
-        </button>
-      {% comment %} </form> {% endcomment %}
-    </div>
-  </div>
+  </form>
 </div>
 {% endblock content %}

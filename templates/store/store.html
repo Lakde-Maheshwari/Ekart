@@ -1,35 +1,98 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16">
-  <h2 class="text-3xl font-bold text-teal-100 mb-8">Featured Products</h2>
+  {% if 'search' in request.path %}
+    <h2 class="text-3xl font-bold text-teal-100 mb-8">Search Results</h2>
+  {% else %}
+    <h2 class="text-3xl font-bold text-teal-100 mb-8">Featured Products</h2>
+  {% endif %}
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
     {% for product in products %}
     <div class="bg-[#1e3a3a] rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
-      <a href={{ product.get_url }}>
-        <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-48 object-cover border-none">
+      <a href="{{ product.get_url }}">
+        <img
+          src="{{ product.images.url }}"
+          alt="{{ product.product_name }}"
+          class="w-full h-48 object-cover border-none"
+        />
       </a>
-
       <div class="p-4">
         <h3 class="text-lg font-semibold text-teal-200">{{ product.product_name }}</h3>
         <p class="text-teal-400 text-sm mt-1 mb-2 truncate">{{ product.description }}</p>
 
         {% if product.stock <= 0 %}
-        <p class="text-red-400 text-sm font-semibold mb-2">Out of Stock</p>
+          <p class="text-red-400 text-sm font-semibold mb-2">Out of Stock</p>
         {% else %}
-        <p class="text-green-400 text-sm font-semibold mb-2">Available</p>
+          <p class="text-green-400 text-sm font-semibold mb-2">Available</p>
         {% endif %}
 
         <div class="flex items-center justify-between">
           <span class="text-teal-300 font-bold text-md">₹{{ product.price }}</span>
-          <a href="#" class="bg-teal-400 text-black px-3 py-1 rounded-full text-sm font-medium hover:bg-teal-300 transition">Buy</a>
+          <a
+            href="{{ product.get_url }}"
+            class="bg-teal-400 text-black px-3 py-1 rounded-full text-sm font-medium hover:bg-teal-300 transition"
+          >
+            Buy
+          </a>
         </div>
       </div>
     </div>
-    {% empty %} 
-    <p class="text-teal-400">No products available right now.</p>
+    {% empty %}
+      <p class="text-teal-400">Nothing Found..!! Please try again.</p>
     {% endfor %}
   </div>
+
+  {% if products.has_other_pages %}
+  <!-- Pagination -->
+  <div class="flex items-center justify-center mt-12 space-x-2">
+    <!-- Previous -->
+    {% if products.has_previous %}
+      <a
+        href="?page={{ products.previous_page_number }}"
+        class="px-4 py-2 border border-teal-400 text-teal-400 rounded-lg hover:bg-teal-400 hover:text-black transition"
+      >
+        &larr; Previous
+      </a>
+    {% else %}
+      <span class="px-4 py-2 border border-teal-800 text-teal-800 rounded-lg cursor-not-allowed">
+        &larr; Previous
+      </span>
+    {% endif %}
+
+    <!-- Page Numbers -->
+    {% for i in products.paginator.page_range %}
+      {% if products.number == i %}
+        <a
+          href="?page={{ i }}"
+          class="px-4 py-2 bg-teal-400 text-black font-bold rounded-lg"
+        >
+          {{ i }}
+        </a>
+      {% else %}
+        <a
+          href="?page={{ i }}"
+          class="px-4 py-2 border border-teal-400 text-teal-400 rounded-lg hover:bg-teal-400 hover:text-black transition"
+        >
+          {{ i }}
+        </a>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Next -->
+    {% if products.has_next %}
+      <a
+        href="?page={{ products.next_page_number }}"
+        class="px-4 py-2 border border-teal-400 text-teal-400 rounded-lg hover:bg-teal-400 hover:text-black transition"
+      >
+        Next &rarr;
+      </a>
+    {% else %}
+      <span class="px-4 py-2 border border-teal-800 text-teal-800 rounded-lg cursor-not-allowed">
+        Next &rarr;
+      </span>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock content %}
