@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto py-10 px-4">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-100">Welcome to Your Dashboard</h1>
+    </div>
+
+    <!-- User Info & Summary -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Address Box -->
+        <div class="bg-[#134e4a] shadow rounded-2xl p-6 border border-teal-800 text-white">
+            <h2 class="text-lg font-semibold mb-2">Shipping Address</h2>
+            <p>
+                {{ user.address }}
+            </p>
+        </div>
+
+        <!-- Order Count Box -->
+        <div
+            class="bg-[#134e4a] shadow rounded-2xl p-6 border border-teal-800 text-white flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Total Orders</h2>
+            <span class="text-3xl font-bold">{{ orders|length }}</span>
+        </div>
+    </div>
+
+    <!-- Orders List -->
+    <div class="bg-[#134e4a] shadow rounded-2xl p-6 border border-teal-800 text-white">
+        <h2 class="text-xl font-semibold mb-4">Your Orders</h2>
+
+        {% if orders %}
+        <div class="space-y-4">
+            {% for order in orders %}
+            <div
+                class="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-[#0f3f3d] rounded-xl">
+                <div class="text-white">
+                    <h3 class="text-md font-medium">Order #{{ order.id }}</h3>
+                    <p class="text-sm">Placed on: {{ order.date }}</p>
+                    <p class="text-sm">Status: {{ order.status }}</p>
+                </div>
+                <a href="{% url 'track_order' order.id %}"
+                    class="mt-3 md:mt-0 bg-white text-[#134e4a] font-semibold px-4 py-2 rounded-xl hover:bg-gray-100 transition">
+                    Track Order
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-white">No orders found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

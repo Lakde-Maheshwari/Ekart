@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-[#0f172a] py-6 px-4">
+    <div class="max-w-md w-full bg-[#1e3a3a] p-6 rounded-xl shadow-md border border-teal-800 space-y-6">
+        {% if request.GET.command == 'verification' %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm mb-2">
+            Thank you for registering! Please check your email <strong>{{ request.GET.email }}</strong> to verify your
+            account.
+            <a href="{% url 'login' %}"><span class="text-black">Login</span> if Already verified.</a>
+        </div>
+        {% endif %}
+        <div class="text-center">
+            <h2 class="text-2xl font-bold text-teal-300">Welcome Back</h2>
+            <p class="text-sm text-teal-400 mt-1">Login to continue shopping</p>
+        </div>
+        {% include "includes/alert.html" %}
+        <form action="{% url 'login' %}" method="POST" class="space-y-4">
+            {% csrf_token %}
+            <input type="email" name="email" required placeholder="Email"
+                class="w-full px-3 py-2 bg-[#0f172a] border border-teal-600 text-white rounded-md focus:ring-2 focus:ring-teal-400 focus:outline-none" />
+            <input type="password" name="password" required placeholder="Password"
+                class="w-full px-3 py-2 bg-[#0f172a] border border-teal-600 text-white rounded-md focus:ring-2 focus:ring-teal-400 focus:outline-none" />
+
+            <!-- Forgot Password Link -->
+            <div class="text-right">
+                <a href="{% url 'forgotPassword' %}"
+                    class="text-sm text-teal-400 hover:text-teal-300 hover:underline">Forgot Password?</a>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-teal-400 text-black py-2 rounded-md font-medium hover:bg-teal-300 transition">Login</button>
+
+            <p class="text-sm text-center text-teal-400">
+                Don't have an account?
+                <a href="{% url 'register' %}" class="text-teal-200 hover:underline">Register</a>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock %}
