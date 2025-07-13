@@ -14,8 +14,8 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib import messages, auth
-
-
+from carts.models import Cart,CartItem
+from carts.views import __cart_id
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -62,8 +62,42 @@ def login(request):
 
         user = auth.authenticate(email=email, password=password)
         if user is not None:
+            try:
+                print("Entering into try block")
+                cart = Cart.objects.get(cart_id=__cart_id(request))
+                cart_item_qs = CartItem.objects.filter(cart=cart)
+
+                if cart_item_qs.exists():
+                    product_variation = [] 
+                    for item in cart_item_qs:
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+
+                    cart_items = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id_list = []
+
+                    for item in cart_items:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id_list.append(item.id)
+
+                    for pr in product_variation:
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id_list[index]
+                            existing_item = CartItem.objects.get(id=item_id)
+                            existing_item.quantity += 1
+                            existing_item.user = user
+                            existing_item.save()
+                        else:
+                            for item in cart_item_qs:
+                                item.user = user
+                                item.save()
+            except Exception as e:
+                print(f"Error merging cart: {str(e)}")
+
             auth.login(request, user)
-            print("login done")
             return redirect('home')
         else:
             messages.error(request, "Invalid email or password.")
