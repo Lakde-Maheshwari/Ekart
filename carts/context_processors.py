@@ -1,5 +1,5 @@
 from .models import Cart, CartItem
-from .views import __cart_id
+from .views import ___cart_id
 
 
 def counter(request):
@@ -8,7 +8,7 @@ def counter(request):
         return {}
     else:
         try:
-            cart = Cart.objects.filter(cart_id=__cart_id(request))
+            cart = Cart.objects.filter(cart_id=___cart_id(request))
             if request.user.is_authenticated:
                 cart_items = CartItem.objects.all().filter(user=request.user) 
             else: 

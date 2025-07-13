@@ -15,7 +15,8 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib import messages, auth
 from carts.models import Cart,CartItem
-from carts.views import __cart_id
+from carts.views import ___cart_id
+import requests 
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -61,49 +62,63 @@ def login(request):
         password = request.POST['password']
 
         user = auth.authenticate(email=email, password=password)
+
         if user is not None:
             try:
-                print("Entering into try block")
-                cart = Cart.objects.get(cart_id=__cart_id(request))
-                cart_item_qs = CartItem.objects.filter(cart=cart)
+                cart = Cart.objects.get(cart_id=___cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
 
-                if cart_item_qs.exists():
-                    product_variation = [] 
-                    for item in cart_item_qs:
+                    # Getting the product variations by cart id
+                    product_variation = []
+                    for item in cart_item:
                         variation = item.variations.all()
                         product_variation.append(list(variation))
 
-                    cart_items = CartItem.objects.filter(user=user)
+                    # Get the cart items from the user to access his product variations
+                    cart_item = CartItem.objects.filter(user=user)
                     ex_var_list = []
-                    id_list = []
-
-                    for item in cart_items:
+                    id = []
+                    for item in cart_item:
                         existing_variation = item.variations.all()
                         ex_var_list.append(list(existing_variation))
-                        id_list.append(item.id)
+                        id.append(item.id)
+
+                    # product_variation = [1, 2, 3, 4, 6]
+                    # ex_var_list = [4, 6, 3, 5]
 
                     for pr in product_variation:
                         if pr in ex_var_list:
                             index = ex_var_list.index(pr)
-                            item_id = id_list[index]
-                            existing_item = CartItem.objects.get(id=item_id)
-                            existing_item.quantity += 1
-                            existing_item.user = user
-                            existing_item.save()
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
                         else:
-                            for item in cart_item_qs:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
                                 item.user = user
                                 item.save()
-            except Exception as e:
-                print(f"Error merging cart: {str(e)}")
-
+            except:
+                pass
             auth.login(request, user)
-            return redirect('home')
+            messages.success(request, 'You are now logged in.')
+            url = request.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query
+                # next=/cart/checkout/
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect('dashboard')
         else:
-            messages.error(request, "Invalid email or password.")
+            messages.error(request, 'Invalid login credentials')
             return redirect('login')
-
-    return render(request, "accounts/login.html")
+    return render(request, 'accounts/login.html')
 
 @login_required(login_url = 'login')
 def logout(request):
