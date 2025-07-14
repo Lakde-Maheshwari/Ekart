@@ -106,13 +106,23 @@
             <span class="text-lg font-bold text-teal-100">₹{{ grand_total }}</span>
           </div>
         </div>
+        <!-- Payment Icons -->
+        <div class="mt-6 mb-4 flex items-center">
+          <div class="flex items-center gap-4">
+            {% load static %}
+            <img src="/media/photos/payment_icons/visa.png" alt="Visa" class="h-8" />
+            <img src="/media/photos/payment_icons/card.png" alt="MasterCard" class="h-8" />
+            <img src="/media/photos/payment_icons/cashless-payment.png" alt="UPI" class="h-8" />
+            <img src="/media/photos/payment_icons/atm-card.png" alt="Credit Card" class="h-8" />
+          </div>
+        </div>
 
         <a href="{% url 'checkout' %}"
-          class="mb-4 w-full inline-block text-center bg-teal-400 hover:bg-teal-300 text-black py-3 rounded-md font-medium transition duration-200">
+          class="mb-2 w-full inline-block text-center bg-teal-400 hover:bg-teal-300 text-black py-3 rounded-md font-medium transition duration-200">
           Proceed to Checkout
         </a>
         <a href="{% url 'store' %}"
-          class="mt-4 w-full inline-block text-center bg-[#0f172a] hover:bg-[#1e293b] text-teal-100 py-3 rounded-md font-medium transition duration-200 border border-teal-800">
+          class="mt-2 w-full inline-block text-center bg-[#0f172a] hover:bg-[#1e293b] text-teal-100 py-3 rounded-md font-medium transition duration-200 border border-teal-800">
           Continue Shopping
         </a>
       </div>

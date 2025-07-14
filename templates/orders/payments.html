@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-teal-100">
+    <h1 class="text-4xl font-bold text-teal-100 mb-10">Review your products and make your payment </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <!-- Left Column -->
+        <div class="lg:col-span-7 space-y-6">
+
+            <!-- Billing Address -->
+            <div class="bg-[#112927] border border-teal-700 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+                <h2 class="text-xl font-semibold text-teal-200 mb-2">Billing Address</h2>
+                <div class="text-sm text-teal-300 space-y-1">
+                    <p>{{ order.full_name }}</p>
+                    <p>{{ order.full_address }}</p>
+                    <p>{{ order.phone }}</p>
+                    <p>{{ order.email }}</p>
+                    <p>{{ order.country }}, {{ order.state }}</p>
+                    {% if order.order_note %}
+                    <p class="italic text-teal-400 mt-2">Note: {{ order.order_note }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="bg-[#112927] border border-teal-700 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+                <h2 class="text-xl font-semibold text-teal-200 mb-2">Payment Method</h2>
+                <p class="text-sm text-teal-300">PayPal</p>
+            </div>
+
+            <!-- Cart Items -->
+            <div class="bg-[#112927] border border-teal-700 rounded-xl p-6 shadow-sm hover:shadow-md transition">
+                <h2 class="text-xl font-semibold text-teal-200 mb-4">Your Cart</h2>
+                <div class="space-y-4">
+                    {% for cart_item in cart_items %}
+                    <div class="flex flex-col md:flex-row justify-between border-b border-teal-800 pb-4">
+                        <div class="flex gap-4">
+                            <img src="{{ cart_item.product.images.url }}" alt="{{ cart_item.product.name }}"
+                                class="w-20 h-20 object-cover rounded border border-teal-600" />
+                            <div>
+                                <a href="{{ cart_item.product.get_url }}"
+                                    class="text-teal-100 font-medium hover:underline">
+                                    {{ cart_item.product.product_name }}
+                                </a>
+                                {% if cart_item.product.category %}
+                                <p class="text-xs text-teal-500 mt-1">Category: {{ cart_item.product.category }}</p>
+                                {% endif %}
+                                <p class="text-xs text-teal-500 mt-1">
+                                    {% for item in cart_item.variations.all %}
+                                    {{ item.variation_category }}: {{ item.variation_value }}<br>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:items-end mt-4 md:mt-0 text-sm text-teal-100">
+                            <p>Qty: {{ cart_item.quantity }}</p>
+                            <p class="mt-1">Price: ₹{{ cart_item.product.price }}</p>
+                            <p class="font-semibold mt-1">Subtotal: ₹{{ cart_item.sub_total }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Summary -->
+        <div class="lg:col-span-5">
+            <div class="bg-[#112927] border border-teal-700 rounded-xl p-6 shadow-md">
+                <h2 class="text-2xl font-bold text-teal-200 mb-6">Order Summary</h2>
+
+                <div class="space-y-4 text-sm text-teal-300">
+                    <div class="flex justify-between">
+                        <span>Subtotal</span>
+                        <span class="text-teal-100 font-medium">₹{{ total }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Tax</span>
+                        <span class="text-teal-100 font-medium">₹{{ tax }}</span>
+                    </div>
+                    <div class="border-t border-teal-800 pt-4 flex justify-between text-lg font-semibold text-teal-200">
+                        <span>Total</span>
+                        <span class="text-teal-100 font-bold">₹{{ grand_total }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <p class="text-sm font-medium text-teal-400 mb-3">Accepted Payment Methods</p>
+                    <div class="flex gap-4 items-center">
+                        <img src="/media/photos/payment_icons/visa.png" alt="Visa" class="h-7" />
+                        <img src="/media/photos/payment_icons/card.png" alt="MasterCard" class="h-7" />
+                        <img src="/media/photos/payment_icons/cashless-payment.png" alt="UPI" class="h-7" />
+                        <img src="/media/photos/payment_icons/atm-card.png" alt="Credit Card" class="h-7" />
+                    </div>
+                </div>
+
+                <div class="mt-8 space-y-3">
+                    <a href="#"
+                        class="w-full block text-center bg-teal-400 hover:bg-teal-300 text-black font-semibold py-3 rounded-lg transition">
+                        Make Payment
+                    </a>
+                    <a href="{% url 'store' %}"
+                        class="w-full block text-center border border-teal-700 text-teal-100 hover:bg-[#1e293b] py-3 rounded-lg font-medium transition">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

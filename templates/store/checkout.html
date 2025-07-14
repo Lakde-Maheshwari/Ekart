@@ -7,7 +7,7 @@
 
     <div class="flex flex-col lg:flex-row gap-8">
         <!-- Left: Shipping Form -->
-        <form method="POST" action="" id="checkout-form"
+        <form method="POST" action="{% url 'place_order' %}" id="checkout-form"
             class="lg:w-1/3 bg-[#1e3a3a] rounded-lg shadow-lg p-6 space-y-6">
             {% csrf_token %}
             <div class="space-y-4">
@@ -45,13 +45,17 @@
                     <input type="text" name="state" placeholder="State"
                         class="w-full bg-[#0f172a] text-teal-100 border border-teal-600 rounded-md p-3 placeholder-teal-400"
                         required />
-                    <input type="text" name="zip_code" placeholder="ZIP Code"
-                        class="w-full bg-[#0f172a] text-teal-100 border border-teal-600 rounded-md p-3 placeholder-teal-400"
-                        required />
                 </div>
                 <input type="text" name="country" placeholder="Country"
                     class="w-full bg-[#0f172a] text-teal-100 border border-teal-600 rounded-md p-3 placeholder-teal-400"
                     required />
+                <div>
+                    <label for="order_note" class="block text-teal-200 font-medium mb-2">Order Note (Optional)</label>
+                    <textarea name="order_note" id="order_note" rows="4"
+                        placeholder="Any special instructions or notes?"
+                        class="w-full bg-[#0f172a] text-teal-100 border border-teal-600 rounded-md p-3 placeholder-teal-400 resize-none"></textarea>
+                </div>
+
             </div>
         </form>
 
