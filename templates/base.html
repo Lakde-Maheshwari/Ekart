@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teal E-commerce Navbar</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=AZolHTFe_edO36SnntQ7L9stYRYWTW6v8AiCoyKLGFuCtyhtOLN77RWCZXFuBZn-2kJNlW2WNmu7mzNC&currency=USD"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -169,7 +171,10 @@
     }
   </script>
 
-  {% block content %} {% endblock content %} {% block footer %}
+  {% block content %}
+
+  {% endblock content %}
+  {% block footer %}
   <footer class="bg-[#134e4a] text-teal-100 pt-10 pb-6 mt-12 border-t border-teal-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -227,6 +232,8 @@
     </div>
   </footer>
   {% endblock footer %}
+
+  {% block extra_scripts %}{% endblock %}
 </body>
 
 </html>

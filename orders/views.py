@@ -71,3 +71,5 @@ def place_order(request,total=0,quantity=0 ):
     else:
         return redirect('checkout')
 
+def paypal_view(request):
+    return render(request, 'paypal.html')
