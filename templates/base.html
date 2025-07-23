@@ -5,16 +5,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teal E-commerce Navbar</title>
+  <!-- Updated Permissions Policy -->
+  <meta http-equiv="Permissions-Policy" content="geolocation=(self 'https://www.paypal.com')">
+  <meta http-equiv="Content-Security-Policy"
+    content="script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.tailwindcss.com https://*.paypal.com https://*.paypalobjects.com https://www.gstatic.com">
+
+
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script
-    src="https://www.paypal.com/sdk/js?client-id=AZolHTFe_edO36SnntQ7L9stYRYWTW6v8AiCoyKLGFuCtyhtOLN77RWCZXFuBZn-2kJNlW2WNmu7mzNC&currency=USD"></script>
+
+
+  <script src="https://www.paypal.com/sdk/js?client-id=
+Adix8P4Rf9NQj2VZxWkYU-J-emOMa_UljtdZJnPvRA61fyq0XpiC4sgvMtHkDAZmj1Jhr2c5jU0b18Li&currency=USD"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: "Inter", sans-serif;
     }
 
-    /* Custom dropdown shadow */
     .dropdown-shadow {
       box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.2);
     }
@@ -174,6 +183,10 @@
   {% block content %}
 
   {% endblock content %}
+
+  <!-- PayPal SDK Loader - Moved to bottom of body -->
+
+
   {% block footer %}
   <footer class="bg-[#134e4a] text-teal-100 pt-10 pb-6 mt-12 border-t border-teal-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -232,8 +245,4 @@
     </div>
   </footer>
   {% endblock footer %}
-
-  {% block extra_scripts %}{% endblock %}
 </body>
-
-</html>

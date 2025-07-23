@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
-    'orders'
+    'orders',
+    'csp',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'Ekart.urls'
@@ -167,4 +169,27 @@ MESSAGE_TAGS = {
 # EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# csp 
+# CONTENT_SECURITY_POLICY = {
+#     "DIRECTIVES": {
+#         "script-src": (
+#             "'self'",
+#             "'unsafe-eval'",  # Required for PayPal
+#             "https://www.paypal.com",
+#             "https://*.paypal.com",
+#             "https://*.paypalobjects.com",
+#         ),
+#         "style-src": (
+#             "'self'",
+#             "'unsafe-inline'",  # Needed for Tailwind CSS inline styles
+#         ),
+#         "img-src": (
+#             "'self'",
+#             "data:",  # If you're using base64 inline images (Tailwind often uses this for background images)
+#         ),
+#     }
+# }
+
+
 

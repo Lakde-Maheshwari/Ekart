@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Payment Success Message -->
+<div class="container mx-auto mt-16 px-4 text-center">
+    <div class="flex flex-col items-center justify-center">
+        <i class="fas fa-check-circle text-teal-400 text-7xl mb-4"></i>
+        <h2 class="text-3xl font-bold text-white mb-4">Payment Successful</h2>
+        <a href="{% url 'store' %}"
+            class="bg-teal-500 hover:bg-teal-400 text-black px-6 py-2 rounded-full font-medium transition">
+            Shop More
+        </a>
+    </div>
+</div>
+
+<!-- Invoice Section -->
+<div class="container mx-auto mt-12 mb-16 max-w-4xl px-6 py-8 rounded-lg bg-[#1e3a3a] shadow-lg">
+    <div class="flex justify-between items-start mb-8">
+        <img src="{% static '/images/logo.png' %}" alt="Invoice logo" class="h-10">
+        <div class="text-right text-sm text-teal-200">
+            <p class="font-semibold text-teal-300">Invoiced To</p>
+            <p>{{ order.full_name }}</p>
+            <p>{{ order.full_address }}</p>
+            <p>{{ order.city }}, {{ order.state }}</p>
+            <p>{{ order.country }}</p>
+        </div>
+    </div>
+
+    <!-- Order Details -->
+    <div class="bg-[#134e4a] text-teal-100 p-4 rounded mb-8">
+        <ul class="text-sm space-y-1">
+            <li><span class="font-medium text-teal-300">Order:</span> #{{ order_number }}</li>
+            <li><span class="font-medium text-teal-300">Transaction ID:</span> {{ transID }}</li>
+            <li><span class="font-medium text-teal-300">Order Date:</span> {{ order.created_at }}</li>
+            <li><span class="font-medium text-teal-300">Status:</span> {{ payment.status }}</li>
+        </ul>
+    </div>
+
+    <!-- Product Table -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-[#0f172a] text-teal-100 text-sm border border-teal-700 rounded-lg">
+            <thead class="bg-teal-900 text-teal-300">
+                <tr>
+                    <th class="text-left py-3 px-4 w-2/3">Product</th>
+                    <th class="text-center py-3 px-4 w-1/6">Qty</th>
+                    <th class="text-center py-3 px-4 w-1/6">Total</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-teal-800">
+                {% for item in ordered_products %}
+                <tr>
+                    <td class="py-3 px-4">
+                        {{ item.product.product_name }}
+                        {% if item.variations.all %}
+                        <div class="text-xs text-teal-400 mt-1">
+                            {% for i in item.variations.all %}
+                            {{ i.variation_category|capfirst }}: {{ i.variation_value|capfirst }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td class="text-center py-3 px-4">{{ item.quantity }}</td>
+                    <td class="text-center py-3 px-4">${{ item.product_price }} USD</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="bg-teal-800 text-white font-medium">
+                <tr>
+                    <td colspan="2" class="text-right py-2 px-4">Subtotal:</td>
+                    <td class="text-center py-2 px-4">${{ subtotal }} USD</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-right py-2 px-4">Tax:</td>
+                    <td class="text-center py-2 px-4">${{ order.tax }} USD</td>
+                </tr>
+                <tr class="text-lg font-bold text-teal-300">
+                    <td colspan="2" class="text-right py-2 px-4">Grand Total:</td>
+                    <td class="text-center py-2 px-4">${{ order.order_total }} USD</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+    <div class="text-center mt-8">
+        <p class="text-teal-400 font-semibold">Thank you for shopping with us!</p>
+    </div>
+</div>
+
+{% endblock %}
