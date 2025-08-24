@@ -1,85 +1,187 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-<div
-  class="max-w-md mx-auto mt-10 bg-[#1e3a3a] rounded-2xl shadow-2xl overflow-hidden hover:shadow-teal-600/50 transition duration-300">
-  <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}"
-    class="w-full h-64 object-cover sm:h-72 md:h-80 lg:h-96" />
+<section class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <div class="flex flex-col md:flex-row">
+        <!-- Product Image Gallery -->
+        <aside class="md:w-1/2 p-6">
+          <div class="mb-4 flex justify-center">
+            <img src="{{ single_product.images.url }}" alt="Product Image" class="max-h-96 rounded-lg">
+          </div>
+          <ul class="flex flex-wrap gap-2 justify-center">
+            <li>
+              <a href="{{ single_product.images.url }}">
+                <img src="{{ single_product.images.url }}" alt="Product Image" class="h-16 w-16 object-cover rounded">
+              </a>
+            </li>
+            {% for i in product_gallery %}
+            <li>
+              <a href="{{ i.image.url }}">
+                <img src="{{ i.image.url }}" alt="Product Image" class="h-16 w-16 object-cover rounded">
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </aside>
 
-  <form action="{% url 'add_cart' single_product.id %}" method="POST">
-    {% csrf_token %}
-    <div class="p-6">
-      <h2 class="text-2xl font-bold text-teal-200 mb-2">
-        {{ single_product.product_name }}
-      </h2>
+        <!-- Product Info & Form -->
+        <main class="md:w-1/2 p-6 border-t md:border-t-0 md:border-l border-gray-700">
+          <form action="{% url 'add_cart' single_product.id %}" method="POST">
+            {% csrf_token %}
+            <div>
+              <h2 class="text-2xl font-bold text-teal-400">{{ single_product.product_name }}</h2>
+              <div class="flex items-center text-teal-300 mt-2">
+                {% for i in "12345" %}
+                {% if single_product.averageReview >= forloop.counter %}
+                <i class="fa fa-star text-teal-400 mr-1"></i>
+                {% elif single_product.averageReview >= forloop.counter0|add:"0.5" %}
+                <i class="fa fa-star-half-o text-teal-400 mr-1"></i>
+                {% else %}
+                <i class="fa fa-star-o text-teal-400 mr-1"></i>
+                {% endif %}
+                {% endfor %}
+                <span class="ml-2">({{ single_product.countReview }} reviews)</span>
+              </div>
 
-      <p class="text-sm text-teal-300 mb-4 leading-relaxed">
-        {{ single_product.description }}
-      </p>
+              <div class="text-2xl font-semibold text-teal-200 mt-4">₹{{ single_product.price }}</div>
+              <p class="mt-2 text-gray-300">{{ single_product.description }}</p>
 
-      <div class="flex items-center justify-between">
-        <span class="text-xl text-teal-300 font-extrabold">
-          ₹{{ single_product.price }}
-        </span>
+              <div class="mt-4">
+                <label class="block text-sm font-medium mb-1">Choose Color</label>
+                <select name="color" class="w-full rounded bg-gray-700 text-white p-2" required>
+                  <option value="" disabled selected>Select</option>
+                  {% for i in single_product.variation_set.colors %}
+                  <option value="{{ i.variation_value|lower }}">{{ i.variation_value|capfirst }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mt-4">
+                <label class="block text-sm font-medium mb-1">Select Size</label>
+                <select name="size" class="w-full rounded bg-gray-700 text-white p-2" required>
+                  <option value="" disabled selected>Select</option>
+                  {% for i in single_product.variation_set.sizes %}
+                  <option value="{{ i.variation_value|lower }}">{{ i.variation_value|capfirst }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mt-6">
+                {% if single_product.stock <= 0 %} <p class="text-red-500 font-bold">Out of Stock</p>
+                  {% else %}
+                  <button type="submit"
+                    class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded">
+                    Add to Cart <i class="fa fa-shopping-cart ml-2"></i>
+                  </button>
+                  {% endif %}
+              </div>
+            </div>
+          </form>
+        </main>
       </div>
-
-      <!-- Dropdown for the color -->
-      <div class="mb-3">
-        <label for="color" class="block text-sm font-medium text-teal-200 mb-1">
-          Choose Color
-        </label>
-        <select id="color" name="color"
-          class="w-full bg-[#2d4d4d] text-teal-100 border border-teal-600 rounded-lg px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-          required>
-          <option value="" disabled selected>Select color</option>
-          {% for i in single_product.variation_set.all %}
-          {% if i.variation_category == "color" %}
-          <option value="{{ i.variation_value }}">{{ i.variation_value }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-
-      <!-- Dropdown for the size -->
-      <div class="mb-4">
-        <label for="size" class="block text-sm font-medium text-teal-200 mb-1">
-          Choose Size
-        </label>
-        <select name="size" id="size"
-          class="w-full bg-[#2d4d4d] text-teal-100 border border-teal-600 rounded-lg px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-          required>
-          <option value="" disabled selected>Select size</option>
-          {% for i in single_product.variation_set.all %}
-          {% if i.variation_category == "size" %}
-          <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-
-      {% if single_product.stock <= 0 %} <p class="text-green-400 text-sm font-semibold mb-4">Out of Stock</p>
-        {% else %}
-        {% if in_cart %}
-        <div class="flex gap-3 mb-4">
-          <a href="{% url 'add_cart' single_product.id %}"
-            class="bg-green-500 text-white font-semibold py-2 px-4 rounded-xl shadow-inner cursor-not-allowed opacity-80 w-full">
-            Add to Cart
-          </a>
-          <a href="{% url 'cart' %}"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition duration-200 w-full text-center">
-            View Cart
-          </a>
-        </div>
-        {% else %}
-        <div class="flex gap-3 mb-4">
-          <button type="submit"
-            class="bg-teal-400 hover:bg-teal-300 text-black font-semibold py-2 px-4 rounded-xl shadow-md transition w-full text-center">
-            🛒 Add to Cart
-          </button>
-        </div>
-        {% endif %}
-        {% endif %}
     </div>
-  </form>
-</div>
-{% endblock content %}
+
+    <!-- Review Form -->
+    <div class="mt-12">
+      <form action="{% url 'submit_review' single_product.id %}" method="POST" class="bg-gray-800 rounded-lg p-6">
+        {% csrf_token %}
+        <p>Ratings are required *</p>
+        <h3 class="text-xl font-semibold text-teal-300 mb-4">Write Your Review</h3>
+
+        <label class="block text-sm mb-2">How do you rate this product?</label>
+        <div class="rate flex gap-2 flex-wrap" id="star-rating">
+          {% for val in "54321" %}
+          <input type="radio" name="rating" id="rating{{ val }}" value="{{ val }}" class="hidden" required>
+          <label for="rating{{ val }}" class="cursor-pointer text-yellow-400 text-2xl">&#9733;</label>
+          {% endfor %}
+        </div>
+
+        <script>
+          const stars = document.querySelectorAll('#star-rating label');
+          const inputs = document.querySelectorAll('#star-rating input');
+
+          stars.forEach((star, idx) => {
+            star.addEventListener('click', () => {
+              // Set the clicked radio input as checked
+              inputs[idx].checked = true;
+
+              // Update colors for stars
+              stars.forEach((s, i) => {
+                if (i <= idx) {
+                  s.classList.add('text-teal-500');
+                  s.classList.remove('text-yellow-400');
+                } else {
+                  s.classList.remove('text-teal-500');
+                  s.classList.add('text-yellow-400');
+                }
+              });
+            });
+          });
+        </script>
+
+        <div class="mt-4">
+          <label class="block text-sm mb-1">Review Title</label>
+          <input type="text" class="w-full rounded bg-gray-700 text-white p-2" name="subject">
+        </div>
+
+        <div class="mt-4">
+          <label class="block text-sm mb-1">Review</label>
+          <textarea name="review" rows="4" class="w-full rounded bg-gray-700 text-white p-2"></textarea>
+        </div>
+
+        <div class="mt-4">
+          {% if user.is_authenticated %}
+          <input type="submit" value="Submit Review"
+            class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded">
+          {% else %}
+          <p>You must purchase this order to post a review.</p>
+          {% endif %}
+        </div>
+      </form>
+
+      <!-- Customer Reviews -->
+      <div class="mt-12">
+        <h3 class="text-xl font-semibold text-teal-300 mb-2">Customer Reviews {{ single_product.countReview }}</h3>
+        <div class="flex items-center text-teal-200 mb-4">
+          {% for i in "12345" %}
+          {% if single_product.averageReview >= forloop.counter %}
+          <i class="fa fa-star text-teal-400 mr-1"></i>
+          {% elif single_product.averageReview >= forloop.counter0|add:"0.5" %}
+          <i class="fa fa-star-half-o text-teal-400 mr-1"></i>
+          {% else %}
+          <i class="fa fa-star-o text-teal-400 mr-1"></i>
+          {% endif %}
+          {% endfor %}
+          <!-- <span class="ml-2">{</span> -->
+        </div>
+
+        {% for review in reviews %}
+        <div class="mb-4 bg-gray-700 p-4 rounded">
+          <div class="flex justify-between items-center text-sm text-teal-100">
+            <span class="font-semibold">{{ review.user.full_name}}</span>
+            <span class="text-gray-400">{{ review.updated_at }}</span>
+          </div>
+
+          <div class="text-teal-300 mt-1">
+            {% for i in "12345" %}
+            {% if review.rating >= forloop.counter %}
+            <i class="fa fa-star text-teal-400"></i>
+            {% elif review.rating >= forloop.counter0|add:"0.5" %}
+            <i class="fa fa-star-half-o text-teal-400"></i>
+            {% else %}
+            <i class="fa fa-star-o text-teal-400"></i>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <h4 class="text-teal-200 font-semibold mt-2">{{ review.subject }}</h4>
+          <p class="text-teal-100">{{ review.review }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
